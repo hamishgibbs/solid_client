@@ -29,7 +29,7 @@ def get_webid_idp(webid: str):
 
         g = Graph()
 
-        g.parse('http://127.0.0.1:8000/jade/card', format='turtle')
+        g.parse(webid, format='turtle')
 
         q = prepareQuery(
             '''

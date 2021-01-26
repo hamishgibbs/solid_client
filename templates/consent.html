@@ -8,11 +8,11 @@
       <div class="login_container">
         <form action="" method="post">
             <p>To access your data, please share your:</p>
-            <input type="text" placeholder="WebID" name="webid" value="{{
-              request.form.webid }}">
-            <p>or</p>
             <input type="text" placeholder="Identity Provider" name="idp" value="{{
-              request.form.username }}"><br /><br />
+              request.form.idp }}">
+            <p>or:</p>
+            <input type="text" placeholder="WebID" name="webid" value="{{
+              request.form.webid }}"><br /><br />
 
           <input class="btn btn-default" type="submit" value="Submit">
         </form>

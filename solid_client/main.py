@@ -17,8 +17,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
-async def root():
-    return {"message": "I am an example SOLID application."}
+async def root(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/consent")
@@ -28,8 +28,8 @@ async def get_consent(request: Request):
 
 @app.post("/consent")
 async def post_consent(request: Request,
-                  webid: str = Form(default=None),
-                  idp: str = Form(default=None)):
+                       idp: str = Form(default=None),
+                       webid: str = Form(default=None)):
 
     with open(SESSION_STORAGE, 'rb') as f:
 
@@ -46,6 +46,8 @@ async def post_consent(request: Request,
     elif webid is not None:
 
         idp = consent.get_webid_idp(webid)
+
+        print(idp)
 
         idp_config = consent.get_idp_config(idp)
 
