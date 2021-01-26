@@ -1,0 +1,5 @@
+.DS_Store
+.tox
+__pycache__
+solid_client.egg-info
+data

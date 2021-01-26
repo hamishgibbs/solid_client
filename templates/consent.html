@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="">
+      <div class="login_container">
+        <h2>Consent</h2>
+      </div>
+      <div class="login_container">
+        <form action="" method="post">
+            <p>To access your data, please share your:</p>
+            <input type="text" placeholder="WebID" name="webid" value="{{
+              request.form.webid }}">
+            <p>or</p>
+            <input type="text" placeholder="Identity Provider" name="idp" value="{{
+              request.form.username }}"><br /><br />
+
+          <input class="btn btn-default" type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+{% endblock %}

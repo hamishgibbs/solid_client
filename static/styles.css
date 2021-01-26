@@ -1,0 +1,13 @@
+.site_title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login_container {
+  text-align: center;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
