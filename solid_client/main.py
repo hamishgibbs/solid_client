@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from solid_client import consent
+from solid_client import token
 import secrets
 import urllib
 from typing import Optional
@@ -15,6 +16,11 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from authlib.jose import jwt, JsonWebKey
 
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://0.0.0.0:27017')
+
+db = client['client']
 
 key = ec.generate_private_key(ec.SECP256R1(), backend=crypto_default_backend())
 
@@ -52,7 +58,7 @@ async def post_consent(request: Request,
                        idp: str = Form(default=None),
                        webid: str = Form(default=None)):
 
-    random_secret = secrets.token_hex(10)
+    nonce = secrets.token_hex(10)
 
     if idp is not None:
 
@@ -73,7 +79,7 @@ async def post_consent(request: Request,
             detail="Please provide a Webid or Identity Provider.",
         )
 
-    code_request = consent.prepare_code_request(random_secret)
+    code_request = consent.prepare_code_request(nonce)
 
     code_params = urllib.parse.urlencode(code_request)
 
@@ -83,7 +89,7 @@ async def post_consent(request: Request,
                                 status_code=303)
 
     response.set_cookie(key="challenge_secret",
-                        value=random_secret,
+                        value=nonce,
                         httponly=True)
 
     response.set_cookie(key="token_endpoint",
@@ -128,14 +134,35 @@ async def callback(code: str,
 
     res = requests.post(token_endpoint, params=auth_body, headers=auth_headers)
 
-    print(res)
-    print(res.status_code)
-    print(res.text)
-    print(res.json)
-
     if res.status_code == 200:
 
-        print(res.json())
+        token_response = res.json()
+
+        if 'access_token' in token_response.keys():
+
+            access_token = token_response['access_token']
+
+            print(access_token)
+
+        else:
+
+            access_token = None
+
+        if 'id_token' in token_response.keys():
+
+            id_token = token_response['id_token']
+
+        else:
+
+            id_token = None
+
+        if 'refresh_token' in token_response.keys():
+
+            refresh_token = token_response['refresh_token']
+
+        else:
+
+            refresh_token = None
 
     else:
 
@@ -144,12 +171,42 @@ async def callback(code: str,
             detail="Unable to verify identity.",
         )
 
-    response = RedirectResponse('/success', status_code=307)
+    response = RedirectResponse('/data', status_code=307)
 
     response.delete_cookie("challenge_secret")
     response.delete_cookie("token_endpoint")
 
+    response.set_cookie(key="access_token", value=access_token)
+
     return response
+
+
+@app.get("/data")
+async def get_data_view(request: Request,
+                        access_token: Optional[str] = Cookie(None)):
+
+    print(access_token)
+
+    if not access_token:
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No access token for protected resources.",
+        )
+
+    dpop_token = token.gen_access_request_dpop_token(CLIENT_PUBLIC_KEY,
+                                                     CLIENT_PRIVATE_KEY,
+                                                     'http://127.0.0.1:8002/protected/data.ttl')
+    request_headers = {
+        'authorization': 'DPoP ' + access_token,
+        'dpop': dpop_token
+    }
+
+    res = requests.get('http://127.0.0.1:8002/protected/data.ttl',
+                       headers=request_headers)
+
+    return templates.TemplateResponse("data.html", {"request": request,
+                                                    "message": res.json()})
 
 
 @app.get("/success")

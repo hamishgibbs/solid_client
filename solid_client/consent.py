@@ -4,6 +4,7 @@ from rdflib import Graph
 from rdflib.plugins.sparql import prepareQuery
 import base64
 import hashlib
+from authlib.oauth2.rfc7636.challenge import create_s256_code_challenge
 
 def get_idp_config(idp: str):
 
@@ -57,7 +58,7 @@ def get_webid_idp(webid: str):
 
 def create_code_challenge(nonce: str):
 
-    return base64.b64encode(hashlib.sha256(nonce.encode('ascii')).digest())
+    return create_s256_code_challenge(nonce)
 
 
 def prepare_code_request(nonce: str,
