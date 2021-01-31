@@ -1,5 +1,7 @@
 # solid_client
 
+![GitHub Actions (Tests)](https://github.com/hamishgibbs/solid_client/workflows/Tests/badge.svg)
+
 An example [Solid](https://solidproject.org/) client implemented in Python.
 
 **Please note:** This library is in the early stages of development. There are no guarantees of security or conformance with the draft [SOLID-OIDC](https://solid.github.io/authentication-panel/solid-oidc/) specification. The library is intended as an example implementation of client authentication in the SOLID ecosystem.
