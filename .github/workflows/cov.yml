@@ -15,14 +15,13 @@ jobs:
       uses: actions/setup-python@master
       with:
         python-version: 3.8
+    - name: Create output directory
+      run: |
+        mkdir coverage
+        mkdir coverage/reports
     - name: Generate coverage report
       run: |
         pytest --cov=./ --cov-report=xml
-      run: |
-        mkdir coverage
-      run: |
-        mkdir coverage/reports
-        
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
