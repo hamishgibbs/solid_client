@@ -1,6 +1,8 @@
 # solid_client
 
 ![GitHub Actions (Tests)](https://github.com/hamishgibbs/solid_client/workflows/Tests/badge.svg)
+[![codecov](https://codecov.io/gh/hamishgibbs/solid_client/branch/master/graph/badge.svg)](https://codecov.io/gh/hamishgibbs/solid_client)
+
 
 An example [Solid](https://solidproject.org/) client implemented in Python.
 
