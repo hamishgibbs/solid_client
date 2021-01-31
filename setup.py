@@ -16,7 +16,7 @@ setuptools.setup(
         'python-multipart>=0.0.5',
         'rdflib>=5.0.0',
         'requests>=2.25.1',
-        'Authlib>=0.15.3'
+        'authlib>=0.15.3'
     ],
     packages=setuptools.find_packages(),
     classifiers=[
