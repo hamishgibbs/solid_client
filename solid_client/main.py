@@ -16,12 +16,6 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from authlib.jose import jwt, JsonWebKey
 
-from pymongo import MongoClient
-
-client = MongoClient('mongodb://0.0.0.0:27017')
-
-db = client['client']
-
 key = ec.generate_private_key(ec.SECP256R1(), backend=crypto_default_backend())
 
 private_key = key.private_bytes(
